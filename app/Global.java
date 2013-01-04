@@ -9,6 +9,7 @@ import models.*;
 
 public class Global extends GlobalSettings {
 
+    @Override
     public void onStart(Application app) {
         InitialData.insert(app);
     }
@@ -16,19 +17,12 @@ public class Global extends GlobalSettings {
     static class InitialData {
 
         public static void insert(Application app) {
-            if(Ebean.find(ShortUrlTag.class).findRowCount() == 0) {
+            if (Ebean.find(ShortUrlTag.class).findRowCount() == 0) {
+                Map<String, List<Object>> all = (Map<String, List<Object>>) Yaml.load("initial-data.yml");
 
-                Map<String,List<Object>> all = (Map<String,List<Object>>)Yaml.load("initial-data.yml");
-
-                // Insert users first
                 Ebean.save(all.get("schemes"));
-
-                // Insert tasks
                 Ebean.save(all.get("tags"));
-
             }
         }
-
     }
-
 }
