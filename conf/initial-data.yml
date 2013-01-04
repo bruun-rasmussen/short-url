@@ -1,0 +1,22 @@
+## YAML Template.
+---
+
+schemes:
+      - !!models.ShortScheme
+        id:            1
+        name:          default
+        targetPattern: (.*)
+        replacement:   http://jorn:8080/items/$1
+
+
+tags:
+      - !!models.ShortUrlTag
+        tag: adf
+        target: FF3D708E9443
+        scheme: !!models.ShortScheme
+                  id: 1
+      - !!models.ShortUrlTag
+        tag: bobo
+        target: 2FAD7E35D185
+        scheme: !!models.ShortScheme
+                  id: 1

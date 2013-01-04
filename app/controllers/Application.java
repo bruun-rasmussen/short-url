@@ -1,9 +1,9 @@
 package controllers;
 
+import models.ShortScheme;
 import models.ShortUrlTag;
-import play.*;
+import play.cache.Cached;
 import play.mvc.*;
-
 import views.html.*;
 
 public class Application extends Controller {
@@ -12,11 +12,18 @@ public class Application extends Controller {
 	    return ok(index.render("Your new application is ready."));
 	  }
 
+      @Cached(key="tag")
 	  public static Result shortTag(String tag) {
         ShortUrlTag url = ShortUrlTag.find.byId(tag);
         if (url == null)
-            return notFound(tag);
-	    return ok(url.toString()); // TODO; //ok("TBW! ["+tag+"] -> ?");
+            return notFound(pageNotFound.render(tag));
+
+        ShortScheme scheme = url.scheme;
+        String target = url.target;
+
+        String rep = scheme.expandTarget(target);
+
+	    return redirect(rep);
 	  }
 
 }
