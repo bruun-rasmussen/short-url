@@ -1,0 +1,33 @@
+@(id: Long, schemeForm: Form[ShortScheme])
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.render) }
+
+@main("Edit URL Scheme") {
+
+    <h1>Edit URL Scheme</h1>
+
+    @form(routes.Application.updateScheme(id)) {
+
+        <fieldset>
+
+            @inputText(schemeForm("name"), '_label -> "URL Scheme")
+            @inputText(schemeForm("description"), '_label -> "Description")
+            @inputText(schemeForm("targetPattern"), '_label -> "Target source")
+            @inputText(schemeForm("tagPrefix"), '_label -> "Shortcut URL prefix")
+            @inputText(schemeForm("replacement"), '_label -> "Shortcut URL format")
+            @inputText(schemeForm("tagAlphabet"), 'size -> 80, '_label -> "Shortcut tag alphabet")
+            @inputText(schemeForm("tagLength"), '_label -> "Shortcut tag length")
+
+        </fieldset>
+
+        <div class="actions">
+            <input type="submit" value="Update" class="btn btn-primary">
+            <a href="@routes.Application.schemeList()" class="btn btn-warning"><i class="icon-ban-circle"></i> Cancel</a>
+        </div>
+
+    }
+
+
+}

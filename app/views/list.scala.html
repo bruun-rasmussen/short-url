@@ -1,0 +1,62 @@
+@(schemes: List[ShortScheme])
+
+
+@**********************************
+* Helper generating table headers *
+***********************************@
+@header(key:String, title:String) = {
+    <th class="@key.replace(".","_") header">@title</th>
+}
+
+@main("Stuff") {
+
+    <h1 id="homeTitle">@Messages("scheme.list.title")</h1>
+
+    @if(flash.containsKey("success")) {
+        <div class="alert-message warning">
+            <strong>Done!</strong> @flash.get("success")
+        </div>
+    }
+
+    <div id="actions">
+
+        <a class="btn success" id="add" href="@routes.Application.createScheme()">
+            <i class="icon-plus-sign"></i> Add URL Scheme</a>
+
+    </div>
+
+    @if(schemes.isEmpty()) {
+
+        <div class="well">
+            <em>Nothing to display</em>
+        </div>
+
+    } else {
+
+        <table class="schemes zebra-striped">
+            <thead>
+                <tr>
+                    @header("name", "Scheme")
+                    @header("description", "Description")
+                    @header("target", "Target")
+                    @header("size", "Size")
+                </tr>
+            </thead>
+            <tbody>
+
+                @for(sch <- schemes) {
+                    <tr>
+                        <td><a href="@routes.Application.editScheme(sch.id)">@sch.name</a></td>
+                        <td>@sch.description</td>
+                        <td>@sch.replacement</td>
+                        <td>@sch.tagLength</td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+
+    }
+
+}
+

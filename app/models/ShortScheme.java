@@ -30,10 +30,10 @@ public class ShortScheme extends Model {
     }
 
     @Id
-    @Constraints.Min(10)
     public Long id;
 
     @Constraints.Required
+    @Constraints.Pattern("[a-zA-Z_][a-zA-Z0-9-_]*")
     public String name;
 
     public String description;
@@ -43,6 +43,27 @@ public class ShortScheme extends Model {
 
     @Constraints.Required
     public String replacement;
+
+    public String tagPrefix;
+
+    public String tagAlphabet;
+
+    @Constraints.Required
+    @Constraints.Min(1)
+    @Constraints.Max(20)
+    public Integer tagLength;
+
+    public String generateTag()
+    {
+      char alphabetChars[] = tagAlphabet.toCharArray();
+      char tagChars[] = new char[tagLength];
+      for (int i = 0; i < tagLength; i++)
+      {
+        int randomPos = (int)(Math.random() * alphabetChars.length);
+        tagChars[i] = alphabetChars[randomPos];
+      }
+      return new String(tagChars);
+    }
 
     public static Finder<Long, ShortScheme> find =
             new Finder<Long, ShortScheme>(Long.class, ShortScheme.class);
