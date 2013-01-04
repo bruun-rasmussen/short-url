@@ -9,11 +9,14 @@ object ApplicationBuild extends Build {
 
     val appDependencies = Seq(
       // Add your project dependencies here,
-      "mysql" % "mysql-connector-java" % "5.1.18"
+      "mysql"            % "mysql-connector-java" % "5.1.18",
+   // "org.apache.derby" % "derby"                % "10.9.1.0",
+      "com.google.zxing" % "core"                 % "2.1",
+      "com.google.zxing" % "javase"               % "2.1"
     )
 
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = JAVA).settings(
-      // Add your own project settings here      
+      // Add your own project settings here
     )
 
 }

@@ -4,10 +4,12 @@
 schemes:
       - !!models.ShortScheme
         id:            1
-        name:          default
+        name:          lot-qr
         targetPattern: (.*)
         replacement:   http://jorn:8080/items/$1
-
+        tagPrefix:
+        tagAlphabet:   abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-@$;#:,+?/
+        tagLength:     4
 
 tags:
       - !!models.ShortUrlTag

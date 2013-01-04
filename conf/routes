@@ -8,4 +8,13 @@ GET     /                           controllers.Application.index()
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
+GET     /tags                       controllers.Application.schemeList()
+POST    /tags                       controllers.Application.createScheme()
+
+GET     /tags/:schemeId             controllers.Application.editScheme(schemeId: Long)
+POST    /tags/:schemeId             controllers.Application.updateScheme(schemeId: Long)
+
+GET     /:scheme/:target       controllers.Application.putShortTag(scheme: String, target: String)
+PUT     /:scheme/:target       controllers.Application.putShortTag(scheme: String, target: String)
+
 GET     /:tag                       controllers.Application.shortTag(tag: String)
