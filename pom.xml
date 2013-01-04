@@ -45,6 +45,16 @@
         <sourceDirectory>app</sourceDirectory>
         <testSourceDirectory>test</testSourceDirectory>
 
+        <resources>
+            <resource>
+                <directory>conf</directory>
+                <targetPath>conf</targetPath>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+        </resources>
+
         <plugins>
 
             <plugin>
