@@ -1,0 +1,10 @@
+@(tag: ShortUrlTag, url: String, qr: String)
+
+@main("Edit URL Scheme") {
+
+    <h1><a href="@url">@url</a></h1>
+
+    <a href="@routes.Application.shortTagQR(tag.scheme.name, tag.target)"><img src="data:image/png;base64,@qr" /></a><br/>
+    (<a href="@tag.getTargetUrl()">@tag.getTargetUrl()</a>)
+
+}

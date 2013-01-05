@@ -1,9 +1,25 @@
 package controllers;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
+import javax.imageio.ImageIO;
 import models.ShortScheme;
 import models.ShortUrlTag;
+import org.apache.commons.codec.binary.Base64;
+import play.Logger;
 import play.cache.Cached;
 import play.data.Form;
 import play.mvc.*;
@@ -44,7 +60,7 @@ public class Application extends Controller {
     }
 
     @Cached(key = "tag")
-    public static Result shortTag(String tag) {
+    public static Result redirectTag(String tag) {
         ShortUrlTag url = ShortUrlTag.find.byId(tag);
         if (url == null)
             return notFound(pageNotFound.render(tag));
@@ -57,11 +73,46 @@ public class Application extends Controller {
         return redirect(rep);
     }
 
-    public static Result putShortTag(String schemeName, String target) throws UnsupportedEncodingException {
+    public static Result shortTag(String schemeName, String target) throws IOException, WriterException {
+        ShortUrlTag shortcut = findOrCreateShortcut(schemeName, target);
+        String shortUrl = shortcut.getShortcutUrl();
+        byte png[] = qrCode(shortUrl);
+        String qrBase64 = new String(Base64.encodeBase64(png));
+    //  return ok(qrBase64).as("text/plain");
+        return ok(viewTag.render(shortcut, shortUrl, qrBase64));
+    }
+
+    public static Result shortTagQR(String schemeName, String target) throws IOException, WriterException {
+        ShortUrlTag shortcut = findOrCreateShortcut(schemeName, target);
+        String shortUrl = shortcut.getShortcutUrl();
+        byte png[] = qrCode(shortUrl);
+        Logger.info("PNG (size: " + png.length+ " bytes)");
+        return ok(png).as("image/png");
+    }
+
+    private static byte[] qrCode(String shortUrl) throws IOException, WriterException {
+        QRCodeWriter writer = new QRCodeWriter();
+        Map<EncodeHintType, Object> hints = new EnumMap<EncodeHintType, Object>(EncodeHintType.class) {{
+            put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
+            put(EncodeHintType.MARGIN, 2);
+        }};
+        BitMatrix matrix = writer.encode(shortUrl, BarcodeFormat.QR_CODE, 256, 256, hints);
+        BufferedImage bi = MatrixToImageWriter.toBufferedImage(matrix);
+        ByteArrayOutputStream bo = new ByteArrayOutputStream();
+        ImageIO.write(bi, "PNG", bo);
+        return bo.toByteArray();
+    }
+
+    public static Result putShortTag(String schemeName, String target) {
+        ShortUrlTag shortcut = findOrCreateShortcut(schemeName, target);
+        return created(shortcut.getShortcutUrl());
+    }
+
+    private static ShortUrlTag findOrCreateShortcut(String schemeName, String target) {
         // 1) Locate the short URL scheme:
         ShortScheme sch = ShortScheme.find.where().eq("name", schemeName).findUnique();
         if (sch == null)
-            return notFound(pageNotFound.render(schemeName));
+            throw new IllegalArgumentException(schemeName + ": no such URL scheme");
 
         // 2) Check if this target has a shortened tag already:
         ShortUrlTag shortcut = ShortUrlTag.find.where()
@@ -69,14 +120,17 @@ public class Application extends Controller {
                 .eq("target", target).findUnique();
 
         if (shortcut == null) {
+            if (!sch.accepts(target))
+                throw new IllegalArgumentException(target + ": invalid shortcut target");
+
             shortcut = new ShortUrlTag();
             shortcut.scheme = sch;
             shortcut.tag = sch.generateTag();
             shortcut.target = target;
             shortcut.save();
+
+            Logger.info(shortcut + ": shortcut created");
         }
-
-        return created(sch.tagPrefix + java.net.URLEncoder.encode(shortcut.tag, "UTF-8"));
+        return shortcut;
     }
-
 }

@@ -1,5 +1,9 @@
 package models;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.*;
 
 import play.db.ebean.*;
@@ -22,12 +26,25 @@ public class ShortUrlTag extends Model {
 	  public String target;
 
 
-      public static Finder<String,ShortUrlTag> find =
-              new Finder(String.class, ShortUrlTag.class);
+    public static Finder<String, ShortUrlTag> find =
+            new Finder(String.class, ShortUrlTag.class);
+
+    public String getShortcutUrl() {
+        try {
+            return scheme.tagPrefix + URLEncoder.encode(tag, "UTF-8");
+        }
+        catch (UnsupportedEncodingException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public String getTargetUrl() {
+        return scheme.expandTarget(target);
+    }
 
     @Override
     public String toString() {
-        return "["+tag+" -> "+target+"]";
+        return "[" + tag + " -> " + target + "]";
     }
 
 }

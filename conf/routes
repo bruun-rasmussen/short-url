@@ -14,7 +14,8 @@ POST    /tags                       controllers.Application.createScheme()
 GET     /tags/:schemeId             controllers.Application.editScheme(schemeId: Long)
 POST    /tags/:schemeId             controllers.Application.updateScheme(schemeId: Long)
 
-GET     /:scheme/:target       controllers.Application.putShortTag(scheme: String, target: String)
-PUT     /:scheme/:target       controllers.Application.putShortTag(scheme: String, target: String)
+GET     /:scheme/:target-qr.png  controllers.Application.shortTagQR(scheme: String, target: String)
+GET     /:scheme/:target         controllers.Application.shortTag(scheme: String, target: String)
+PUT     /:scheme/:target         controllers.Application.putShortTag(scheme: String, target: String)
 
-GET     /:tag                       controllers.Application.shortTag(tag: String)
+GET     /:tag                       controllers.Application.redirectTag(tag: String)

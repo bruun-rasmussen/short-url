@@ -10,9 +10,9 @@ import play.data.validation.*;
 
 @Entity
 public class ShortScheme extends Model {
-    private Pattern pattern;
+    private transient Pattern pattern;
 
-    public String expandTarget(String target) {
+    private Pattern getPattern() {
         if (pattern == null) {
             String p = targetPattern;
             if (StringUtils.isEmpty(p))
@@ -23,10 +23,18 @@ public class ShortScheme extends Model {
                 p = p + "$";
             pattern = Pattern.compile(p);
         }
-        Matcher m = pattern.matcher(target);
+        return pattern;
+    }
+
+    public String expandTarget(String target) {
+        Matcher m = getPattern().matcher(target);
         if (!m.matches())
             throw new IllegalArgumentException("\"" + target + "\" does not match /"+pattern.pattern()+"/");
         return m.replaceFirst(replacement);
+    }
+
+    public boolean accepts(String target) {
+        return getPattern().matcher(target).matches();
     }
 
     @Id
