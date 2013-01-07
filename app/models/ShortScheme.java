@@ -38,7 +38,7 @@ public class ShortScheme extends Model {
     }
 
     String getShortcutUrl(String tag) {
-        return tagPrefix + tag;
+        return shortcutPrefix + tag;
     }
 
     @Id
@@ -56,7 +56,7 @@ public class ShortScheme extends Model {
     @Constraints.Required
     public String replacement;
 
-    public String tagPrefix;
+    public String shortcutPrefix;
 
     public String tagAlphabet;
 

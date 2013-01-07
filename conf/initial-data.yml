@@ -3,13 +3,13 @@
 
 schemes:
       - !!models.ShortScheme
-        id:            1
-        name:          lot-qr
-        targetPattern: (.*)
-        replacement:   http://jorn:8080/items/$1
-        tagPrefix:
-        tagAlphabet:   abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-@$;#:,+?/
-        tagLength:     4
+        id:              1
+        name:            lot-qr
+        targetPattern:   ([0-9A-F]+)
+        replacement:     http://www.bruun-rasmussen.dk/items/$1
+        shortcutPrefix:  http://bra.dk/
+        tagAlphabet:     abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-@$;#:,+?/
+        tagLength:       6
 
 tags:
       - !!models.ShortUrlTag
