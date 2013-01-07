@@ -37,6 +37,10 @@ public class ShortScheme extends Model {
         return getPattern().matcher(target).matches();
     }
 
+    String getShortcutUrl(String tag) {
+        return tagPrefix + tag;
+    }
+
     @Id
     public Long id;
 

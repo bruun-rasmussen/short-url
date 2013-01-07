@@ -30,13 +30,15 @@ public class ShortUrlTag extends Model {
             new Finder(String.class, ShortUrlTag.class);
 
     public String getShortcutUrl() {
+        return scheme.getShortcutUrl(tag);
+/*
         try {
             return scheme.tagPrefix + URLEncoder.encode(tag, "UTF-8");
         }
         catch (UnsupportedEncodingException ex) {
             throw new RuntimeException(ex);
         }
-    }
+ */ }
 
     public String getTargetUrl() {
         return scheme.expandTarget(target);
