@@ -8,7 +8,7 @@
     <th class="@key.replace(".","_") header">@title</th>
 }
 
-@main("Stuff") {
+@main(Messages("scheme.list.title")) {
 
     <h1 id="homeTitle">@Messages("scheme.list.title")</h1>
 
@@ -21,7 +21,7 @@
     <div id="actions">
 
         <a class="btn success" id="add" href="@routes.Application.createScheme()">
-            <i class="icon-plus-sign"></i> Add URL Scheme</a>
+            <i class="icon-plus-sign"></i> @Messages("add.scheme")</a>
 
     </div>
 

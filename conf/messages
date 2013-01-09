@@ -1,0 +1,16 @@
+# To change this template, choose Tools | Templates
+# and open the template in the editor.
+
+scheme.list.title=Shortcut URL Schemes
+edit.scheme.title=Edit URL Scheme
+add.scheme=Add URL Scheme
+
+scheme.name.label=Name
+
+scheme.description.label=Description
+scheme.target_pattern.label=Input data pattern
+scheme.replacement.label=Long URL template
+scheme.shortcut_prefix.label=Short URL prefix
+
+constraint.pattern=Constrained format
+constraint.required=Required

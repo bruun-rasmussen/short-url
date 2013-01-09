@@ -4,21 +4,21 @@
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.render) }
 
-@main("Edit URL Scheme") {
+@main(Messages("edit.scheme.title")) {
 
-    <h1>Edit URL Scheme</h1>
+    <h1>@Messages("edit.scheme.title")</h1>
 
     @form(routes.Application.updateScheme(id)) {
 
         <fieldset>
 
-            @inputText(schemeForm("name"), '_label -> "URL Scheme")
-            @inputText(schemeForm("description"), '_label -> "Description")
-            @inputText(schemeForm("targetPattern"), '_label -> "Target source")
-            @inputText(schemeForm("shortcutPrefix"), '_label -> "Shortcut URL prefix")
-            @inputText(schemeForm("replacement"), '_label -> "Shortcut URL format")
-            @inputText(schemeForm("tagAlphabet"), 'size -> 80, '_label -> "Shortcut tag alphabet")
-            @inputText(schemeForm("tagLength"), '_label -> "Shortcut tag length")
+            @inputText(schemeForm("name"), '_label -> Messages("scheme.name.label"))
+            @inputText(schemeForm("description"), '_label -> Messages("scheme.description.label"))
+            @inputText(schemeForm("targetPattern"), '_label -> Messages("scheme.target_pattern.label"))
+            @inputText(schemeForm("shortcutPrefix"), '_label -> Messages("scheme.shortcut_prefix.label"))
+            @inputText(schemeForm("replacement"), '_label -> Messages("scheme.replacement.label"))
+            @inputText(schemeForm("tagAlphabet"), 'size -> 80, '_label -> Messages("scheme.tag_alphabet.label"))
+            @inputText(schemeForm("tagLength"), '_label -> Messages("scheme.tag_length.label"))
 
         </fieldset>
 
