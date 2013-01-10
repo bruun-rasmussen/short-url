@@ -72,29 +72,41 @@ public class Application extends Controller {
     }
 
     public static Result shortTag(String schemeName, String target) throws IOException, WriterException {
+
         ShortUrlTag shortcut = findOrCreateShortcut(schemeName, target);
         String shortUrl = shortcut.getShortcutUrl();
-        byte png[] = qrCode(shortUrl);
+        byte png[] = qrCode(shortUrl, null, null, null);
         String qrBase64 = new String(Base64.encodeBase64(png));
     //  return ok(qrBase64).as("text/plain");
         return ok(viewTag.render(shortcut, shortUrl, qrBase64));
     }
 
-    public static Result shortTagQR(String schemeName, String target) throws IOException, WriterException {
+    public static Result shortTagQR(String schemeName, String target, Integer size, Integer margin, String ecc) throws IOException, WriterException {
         ShortUrlTag shortcut = findOrCreateShortcut(schemeName, target);
         String shortUrl = shortcut.getShortcutUrl();
-        byte png[] = qrCode(shortUrl);
+        byte png[] = qrCode(shortUrl, size, margin, ecc);
         Logger.info("PNG (size: " + png.length+ " bytes)");
         return ok(png).as("image/png");
     }
 
-    private static byte[] qrCode(String shortUrl) throws IOException, WriterException {
+    private static byte[] qrCode(String shortUrl, Integer size, Integer margin, String ecc) throws IOException, WriterException {
+        if (size == null)
+            size = 256;
+        if (margin == null)
+            margin = 0;
+        if (ecc == null)
+            ecc = "M";
+
         QRCodeWriter writer = new QRCodeWriter();
-        Map<EncodeHintType, Object> hints = new EnumMap<EncodeHintType, Object>(EncodeHintType.class) {{
-            put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
-            put(EncodeHintType.MARGIN, 2);
-        }};
-        BitMatrix matrix = writer.encode(shortUrl, BarcodeFormat.QR_CODE, 256, 256, hints);
+        Map<EncodeHintType, Object> hints = new EnumMap<EncodeHintType, Object>(EncodeHintType.class);
+        hints.put(EncodeHintType.ERROR_CORRECTION,
+                "L".equals(ecc) ? ErrorCorrectionLevel.L :
+                "M".equals(ecc) ? ErrorCorrectionLevel.M :
+                "Q".equals(ecc) ? ErrorCorrectionLevel.Q :
+                "H".equals(ecc) ? ErrorCorrectionLevel.H : ErrorCorrectionLevel.M);
+        hints.put(EncodeHintType.MARGIN, margin);
+
+        BitMatrix matrix = writer.encode(shortUrl, BarcodeFormat.QR_CODE, size, size, hints);
         BufferedImage bi = MatrixToImageWriter.toBufferedImage(matrix);
         ByteArrayOutputStream bo = new ByteArrayOutputStream();
         ImageIO.write(bi, "PNG", bo);
