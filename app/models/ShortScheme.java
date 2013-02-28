@@ -3,7 +3,7 @@ package models;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.persistence.*;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import play.db.ebean.*;
 import play.data.validation.*;

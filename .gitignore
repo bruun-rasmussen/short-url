@@ -20,3 +20,7 @@ test-result
 server.pid
 *.iml
 *.eml
+.history
+.settings
+dist
+/nbproject/private/
