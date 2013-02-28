@@ -10,6 +10,12 @@
 
     <packaging>play2</packaging>
 
+    <scm>
+        <connection>scm:git:https://github.com/bruun-rasmussen/short-url.git</connection>
+        <developerConnection>scm:git:https://github.com/bruun-rasmussen/short-url.git</developerConnection>
+        <url>https://github.com/bruun-rasmussen/short-url</url>
+    </scm>
+
     <repositories>
         <repository>
             <id>typesafe</id>
