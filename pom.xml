@@ -12,7 +12,7 @@
 
     <groupId>dk.es.br.play</groupId>
     <artifactId>short-url</artifactId>
-    <version>0.3</version>
+    <version>0.4-SNAPSHOT</version>
 
     <name>Short-URL</name>
 
