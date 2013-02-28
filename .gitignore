@@ -4,5 +4,6 @@ project/target
 target
 tmp
 .history
+.settings
 dist
 /nbproject/private/
