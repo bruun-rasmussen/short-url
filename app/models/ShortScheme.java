@@ -5,7 +5,8 @@ import java.util.regex.Pattern;
 import javax.persistence.*;
 import org.apache.commons.lang.StringUtils;
 
-import play.db.ebean.*;
+import io.ebean.*;
+import play.data.format.*;
 import play.data.validation.*;
 
 @Entity

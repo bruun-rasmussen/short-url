@@ -6,7 +6,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.*;
 
-import play.db.ebean.*;
+import io.ebean.*;
+import play.data.format.*;
 import play.data.validation.*;
 
 @Entity
