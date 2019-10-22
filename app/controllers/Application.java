@@ -25,11 +25,11 @@ import views.html.*;
 
 public class Application extends Controller {
 
-    public static Result index() {
+    public Result index() {
         return ok(index.render("Your new application is ready."));
     }
 
-    public static Result updateScheme(Long id) {
+    public Result updateScheme(Long id) {
         Form<ShortScheme> form = form(ShortScheme.class).bindFromRequest();
 
         if (form.hasErrors())
@@ -41,24 +41,24 @@ public class Application extends Controller {
         return redirect(routes.Application.schemeList());
     }
 
-    public static Result editScheme(Long id) {
+    public Result editScheme(Long id) {
         Form<ShortScheme> form =
                 form(ShortScheme.class).fill(ShortScheme.find.byId(id));
         return ok(edit.render(id, form));
     }
 
-    public static Result createScheme() {
+    public Result createScheme() {
         return ok(index.render("Your new application is ready."));
     }
 
-    public static Result schemeList() {
+    public Result schemeList() {
         List<ShortScheme> all = ShortScheme.find.orderBy().asc("name").findList();
 
         return ok(list.render(all));
     }
 
     @Cached(key = "tag")
-    public static Result redirectTag(String tag) {
+    public Result redirectTag(String tag) {
         ShortUrlTag url = ShortUrlTag.find.byId(tag);
         if (url == null)
             return notFound(pageNotFound.render(tag));
@@ -71,7 +71,7 @@ public class Application extends Controller {
         return redirect(rep);
     }
 
-    public static Result shortTag(String schemeName, String target) throws IOException, WriterException {
+    public Result shortTag(String schemeName, String target) throws IOException, WriterException {
 
         ShortUrlTag shortcut = findOrCreateShortcut(schemeName, target);
         String shortUrl = shortcut.getShortcutUrl();
@@ -81,7 +81,7 @@ public class Application extends Controller {
         return ok(viewTag.render(shortcut, shortUrl, qrBase64));
     }
 
-    public static Result shortTagQR(String schemeName, String target, Integer size, Integer margin, String ecc) throws IOException, WriterException {
+    public Result shortTagQR(String schemeName, String target, Integer size, Integer margin, String ecc) throws IOException, WriterException {
         ShortUrlTag shortcut = findOrCreateShortcut(schemeName, target);
         String shortUrl = shortcut.getShortcutUrl();
         byte png[] = qrCode(shortUrl, size, margin, ecc);
@@ -113,7 +113,7 @@ public class Application extends Controller {
         return bo.toByteArray();
     }
 
-    public static Result putShortTag(String schemeName, String target) {
+    public Result putShortTag(String schemeName, String target) {
         ShortUrlTag shortcut = findOrCreateShortcut(schemeName, target);
         return created(shortcut.getShortcutUrl());
     }
