@@ -1,46 +1,35 @@
 package models;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.persistence.*;
+import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
 
-import play.db.ebean.*;
-import play.data.validation.*;
+import java.net.URI;
+
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.logging.Log;
 
 @Entity
-@Table(uniqueConstraints =
-                @UniqueConstraint(columnNames={"scheme_id", "target"}))
-public class ShortUrlTag extends Model {
+@Table(name = "short_url_tag", uniqueConstraints = @UniqueConstraint(columnNames = { "scheme_id", "target" }))
+public class ShortUrlTag extends PanacheEntityBase {
 
-	  @Id
-	  @Constraints.Min(10)
-	  public String tag;
+    @Id
+    @Column(name = "tag", nullable = false)
+    private String tag;
 
-	  @Constraints.Required
-      @ManyToOne
-	  public ShortScheme scheme;
+    @ManyToOne
+    @JoinColumn(name = "scheme_id", nullable = false)
+    public ShortScheme scheme;
 
-	  @Constraints.Required
-	  public String target;
-
-
-    public static Finder<String, ShortUrlTag> find =
-            new Finder(String.class, ShortUrlTag.class);
+    @Column(name = "target", nullable = false)
+    @NotNull
+    public String target;
 
     public String getShortcutUrl() {
         return scheme.getShortcutUrl(tag);
-/*
-        try {
-            return scheme.tagPrefix + URLEncoder.encode(tag, "UTF-8");
-        }
-        catch (UnsupportedEncodingException ex) {
-            throw new RuntimeException(ex);
-        }
- */ }
+    }
 
-    public String getTargetUrl() {
+    public URI getTargetURI() {
         return scheme.expandTarget(target);
     }
 
@@ -49,4 +38,28 @@ public class ShortUrlTag extends Model {
         return "[" + tag + " -> " + target + "]";
     }
 
+    public static ShortUrlTag findByTag(String tag) {
+        return find("tag", tag).firstResult();
+    }
+
+    @Transactional
+    public static ShortUrlTag findOrCreate(ShortScheme scheme, String target) {
+        // Check if this target has a shortened tag already:
+        ShortUrlTag shortcut = find("scheme = ?1 and target = ?2", scheme, target).firstResult();
+
+        if (shortcut == null) {
+            if (!scheme.accepts(target))
+                throw new IllegalArgumentException(target + ": invalid shortcut target");
+
+            shortcut = new ShortUrlTag();
+            shortcut.scheme = scheme;
+            shortcut.tag = scheme.generateTag();
+            shortcut.target = target;
+            shortcut.persist();
+
+            Log.info(shortcut + ": shortcut created");
+        }
+
+        return shortcut;
+    }
 }

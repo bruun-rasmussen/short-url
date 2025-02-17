@@ -1,18 +1,19 @@
 package models;
 
+import java.net.URI;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javax.persistence.*;
 import org.apache.commons.lang.StringUtils;
 
-import play.db.ebean.*;
-import play.data.validation.*;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
-@Entity
-public class ShortScheme extends Model {
-    private transient Pattern pattern;
+@Entity(name = "ShortScheme")
+@Table(name = "short_scheme")
+public class ShortScheme extends PanacheEntityBase {
+    private transient java.util.regex.Pattern pattern;
 
-    private Pattern getPattern() {
+    private java.util.regex.Pattern getPattern() {
         if (pattern == null) {
             String p = targetPattern;
             if (StringUtils.isEmpty(p))
@@ -21,16 +22,17 @@ public class ShortScheme extends Model {
                 p = "^" + p;
             if (!p.endsWith("$"))
                 p = p + "$";
-            pattern = Pattern.compile(p);
+            pattern = java.util.regex.Pattern.compile(p);
         }
         return pattern;
     }
 
-    public String expandTarget(String target) {
+    public URI expandTarget(String target) {
         Matcher m = getPattern().matcher(target);
         if (!m.matches())
-            throw new IllegalArgumentException("\"" + target + "\" does not match /"+pattern.pattern()+"/");
-        return m.replaceFirst(replacement);
+            throw new IllegalArgumentException("\"" + target + "\" does not match /" + pattern.pattern() + "/");
+
+        return URI.create(m.replaceFirst(replacement));
     }
 
     public boolean accepts(String target) {
@@ -44,25 +46,29 @@ public class ShortScheme extends Model {
     @Id
     public Long id;
 
-    @Constraints.Required
-    @Constraints.Pattern("[a-zA-Z_][a-zA-Z0-9-_]*")
+    @Column(name = "name", unique = true)
+    @Pattern(regexp = "[a-zA-Z_][a-zA-Z0-9-_]*")
     public String name;
 
+    @Column(name = "description")
     public String description;
 
-    @Constraints.Required
+    @Column(name = "target_pattern")
     public String targetPattern;
 
-    @Constraints.Required
+    @Column(name = "replacement")
     public String replacement;
 
+    @Column(name = "shortcut_prefix")
     public String shortcutPrefix;
 
+    @Column(name = "tag_alphabet")
+    @NotBlank
     public String tagAlphabet;
 
-    @Constraints.Required
-    @Constraints.Min(1)
-    @Constraints.Max(20)
+    @Column(name = "tag_length")
+    @Min(1)
+    @Max(20)
     public Integer tagLength;
 
     public String generateTag()
@@ -76,7 +82,4 @@ public class ShortScheme extends Model {
       }
       return new String(tagChars);
     }
-
-    public static Finder<Long, ShortScheme> find =
-            new Finder<Long, ShortScheme>(Long.class, ShortScheme.class);
 }
