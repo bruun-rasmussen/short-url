@@ -1,0 +1,13 @@
+quarkus:
+
+  datasource:
+    db-kind: mysql
+    db-version: 8.4
+
+  hibernate-orm:
+    database:
+      generation: none
+
+  flyway:
+    migrate-at-start: true
+    baseline-on-migrate: true

@@ -1,0 +1,10 @@
+quarkus:
+
+  hibernate-orm:
+    log:
+      sql: true
+
+  datasource:
+    devservices:
+      init-script-path: import-dev.sql
+      show-logs: true
