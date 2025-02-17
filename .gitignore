@@ -5,11 +5,6 @@ pom.xml.releaseBackup
 pom.xml.versionsBackup
 release.properties
 .flattened-pom.xml
-# Extracted from https://github.com/ulrich/macaron-factory/blob/master/.gitignore
-# Ignore all dotfiles...
-.*
-# except for .gitignore
-!.gitignore
 
 # Eclipse
 .project
@@ -20,17 +15,31 @@ bin/
 # IntelliJ
 .idea
 *.ipr
-# Ignore Play! working directory #
-db
-eclipse
-lib
-log
-logs
-project/project
-project/target
-target
-tmp
-.history
-.settings
-dist
-/nbproject/private/
+*.iml
+*.iws
+
+# NetBeans
+nb-configuration.xml
+
+# Visual Studio Code
+.vscode
+.factorypath
+
+# OSX
+.DS_Store
+
+# Vim
+*.swp
+*.swo
+
+# patch
+*.orig
+*.rej
+
+# Local environment
+.env
+
+# Plugin directory
+/.quarkus/cli/plugins/
+# TLS Certificates
+.certs/
