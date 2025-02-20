@@ -3,12 +3,13 @@ package models;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-import io.quarkus.logging.Log;
 
+@Slf4j
 @Entity
 @Table(name = "short_url_tag", uniqueConstraints = @UniqueConstraint(columnNames = { "scheme_id", "target" }))
 public class ShortUrlTag extends PanacheEntityBase {
@@ -35,7 +36,7 @@ public class ShortUrlTag extends PanacheEntityBase {
 
     @Override
     public String toString() {
-        return "[" + tag + " -> " + target + "]";
+        return "[" + tag + " \u279d " + target + "]";
     }
 
     public static ShortUrlTag findByTag(String tag) {
@@ -57,7 +58,7 @@ public class ShortUrlTag extends PanacheEntityBase {
             shortcut.target = target;
             shortcut.persist();
 
-            Log.info(shortcut + ": shortcut created");
+            log.info("{}: created", shortcut);
         }
 
         return shortcut;

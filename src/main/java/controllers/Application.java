@@ -25,9 +25,11 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import lombok.extern.slf4j.Slf4j;
 import models.ShortScheme;
 import models.ShortUrlTag;
 
+@Slf4j
 @Path("/")
 public class Application {
 
@@ -48,6 +50,7 @@ public class Application {
         String shortUrl = shortcut.getShortcutUrl();
 
         byte png[] = getQRCodeAsPNG(shortUrl, size, margin, ecc);
+        log.info("{}/{}-qr.png ({} bytes): QR code for {} served", schemeName, target, png.length, shortUrl);
         return Response.ok(png).build();
     }
 
