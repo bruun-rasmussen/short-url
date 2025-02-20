@@ -26,12 +26,39 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import lombok.extern.slf4j.Slf4j;
+import com.google.gson.Gson;
 import models.ShortScheme;
 import models.ShortUrlTag;
 
 @Slf4j
 @Path("/")
 public class Application {
+
+    @GET
+    @Path("{tag}")
+    public Response redirectTag(@PathParam("tag") String tag,
+                                @QueryParam("info") @DefaultValue("false") boolean showInfo) {
+        ShortUrlTag shortcut = ShortUrlTag.findByTag(tag);
+        if (shortcut == null) {
+            log.info("'{}': tag not found", tag);
+            return Response.status(Status.NOT_FOUND).entity("'" + tag + "': not found").build();
+        }
+
+        if (showInfo) {
+            log.info("'{}': info {}", tag, shortcut);
+            String json = new Gson().toJson(shortcut);
+            
+            return Response.ok()
+                        .header("Content-Type", "application/json")
+                        .entity(json).build();
+        }
+        else {
+            URI rep = shortcut.getTargetURI();
+            log.info("'{}' \u279d {}", tag, rep);
+    
+            return Response.seeOther(rep).build();    
+        }
+    }
 
     @GET
     @Path("/{scheme}/{target}-qr.png")
@@ -53,17 +80,6 @@ public class Application {
         log.info("{}/{}-qr.png ({} bytes): QR code for {} served", schemeName, target, png.length, shortUrl);
         return Response.ok(png).build();
     }
-
-    @GET
-    @Path("{tag}")
-    public Response redirectTag(@PathParam("tag") String tag) {
-        ShortUrlTag shortcut = ShortUrlTag.findByTag(tag);
-        if (shortcut == null)
-            return Response.status(Status.NOT_FOUND).entity("'" + tag + "': not found").build();
-
-        URI rep = shortcut.getTargetURI();
-        return Response.seeOther(rep).build();
-   }
 
     private byte[] getQRCodeAsPNG(String shortUrl, int size, int margin, String ecc) throws WriterException, IOException {  
 

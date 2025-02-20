@@ -1,6 +1,57 @@
 # Short-URL
 
-Simple URL-shortener application
+A flexible URL shortening service built with Quarkus that generates short tags for URLs and provides QR code generation in PNG and SVG formats.
+
+## Features
+
+- **URL Shortening**: Create short, memorable tags for long URLs using customizable schemes
+- **QR Code Generation**: Generate QR codes in PNG or SVG format for any shortened URL
+- **Flexible Schemes**: Define multiple URL schemes with pattern matching and custom tag generation
+- **RESTful API**: Simple HTTP endpoints for redirects, metadata, and QR code generation
+- **Persistent Storage**: MySQL database with Flyway migrations for schema management
+
+## API Endpoints
+
+### Redirect to Target URL
+```http
+GET /{tag}
+```
+Returns a 303 redirect to the target URL associated with the tag.
+
+**Get metadata instead of redirecting:**
+```http
+GET /{tag}?info=true
+```
+Returns JSON metadata about the shortened URL.
+
+### Generate QR Code (PNG)
+```http
+GET /{scheme}/{target}-qr.png?size=256&margin=0&ecc=M
+```
+Generates a PNG QR code for the shortened URL.
+
+**Query Parameters:**
+- `size`: Image size in pixels (default: 256)
+- `margin`: Margin size (default: 0)
+- `ecc`: Error correction level - L/M/Q/H (default: M)
+
+### Generate QR Code (SVG)
+```http
+GET /{scheme}/{target}-qr.svg?scale=4&margin=0&ecc=M
+```
+Generates an SVG QR code for the shortened URL.
+
+**Query Parameters:**
+- `scale`: Scale factor (default: 4)
+- `margin`: Margin size (default: 0)
+- `ecc`: Error correction level - L/M/Q/H (default: M)
+
+## Architecture
+
+The application uses two core models:
+
+- **ShortScheme**: Defines URL shortening schemes with regex patterns, replacements, and tag generation rules
+- **ShortUrlTag**: Maps tags to target URLs within a scheme, automatically generating unique tags as needed
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
@@ -54,6 +105,42 @@ mvn package -Dnative -Dquarkus.native.container-build=true
 You can then execute your native executable with: `./target/short-url-1.0.0-SNAPSHOT-runner`
 
 If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
+
+## Testing
+
+Run all tests:
+```shell script
+mvn test
+```
+
+Run a specific test class:
+```shell script
+mvn test -Dtest=AppliactionTest
+```
+
+Run a specific test method:
+```shell script
+mvn test -Dtest=AppliactionTest#getKnownShortcut
+```
+
+## Configuration
+
+The application uses YAML configuration files in `src/main/resources/`:
+- `application.yml`: Main configuration
+- `application-dev.yml`: Development profile overrides
+- `application-test.yml`: Test profile overrides
+
+Database migrations are managed by Flyway and located in `src/main/resources/db/migration/`.
+
+## Technology Stack
+
+- **Quarkus 3.18.3**: Java framework
+- **Hibernate ORM with Panache**: Simplified persistence layer
+- **MySQL 8.4**: Database
+- **Flyway**: Database migrations
+- **ZXing 3.4.1**: QR code generation
+- **Jackson**: JSON serialization
+- **Lombok**: Boilerplate reduction
 
 ## Related Guides
 
