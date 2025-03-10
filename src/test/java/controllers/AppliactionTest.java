@@ -47,4 +47,14 @@ public class AppliactionTest {
                 .statusCode(200)
                 .contentType("image/png");
     }   
+
+    @Test
+    public void getQRCodeAsSVG() {
+        given()
+                .redirects().follow(false)
+                .get("/{scheme}/{target}-qr.svg", "lot-id", "4D48C8650442")
+                .then()
+                .statusCode(200)
+                .contentType("image/svg+xml");
+    }   
 }
