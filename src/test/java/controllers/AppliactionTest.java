@@ -25,7 +25,8 @@ public class AppliactionTest {
                 .redirects().follow(false)
                 .get("/{tag}?info=true", "cVsWU")
                 .then()
-                .statusCode(200);
+                .statusCode(200)
+                .contentType("application/json");
     }
 
     @Test

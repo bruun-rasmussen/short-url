@@ -36,6 +36,7 @@ public class Application {
 
     @GET
     @Path("{tag}")
+    @Produces("application/json")
     public Response redirectTag(@PathParam("tag") String tag,
                                 @QueryParam("info") @DefaultValue("false") boolean showInfo) {
         ShortUrlTag shortcut = ShortUrlTag.findByTag(tag);
@@ -45,12 +46,8 @@ public class Application {
         }
 
         if (showInfo) {
-            log.info("'{}': info {}", tag, shortcut);
-            String json = new Gson().toJson(shortcut);
-            
-            return Response.ok()
-                        .header("Content-Type", "application/json")
-                        .entity(json).build();
+            log.info("'{}': info {}", tag, shortcut);            
+            return Response.ok(shortcut).build();
         }
         else {
             URI rep = shortcut.getTargetURI();
