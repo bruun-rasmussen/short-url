@@ -1,5 +1,9 @@
 quarkus:
 
+  http:
+    cors: 
+      ~: true    
+
   datasource:
     db-kind: mysql
     db-version: 8.4
@@ -14,3 +18,9 @@ quarkus:
 
   banner:
     path: banner.txt
+
+  container-image:
+    builder: jib
+    build: true
+    push: true
+    registry: degas.bruun-rasmussen.dk:5000
