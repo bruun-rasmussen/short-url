@@ -115,12 +115,12 @@ mvn test
 
 Run a specific test class:
 ```shell script
-mvn test -Dtest=AppliactionTest
+mvn test -Dtest=ApplicationTest
 ```
 
 Run a specific test method:
 ```shell script
-mvn test -Dtest=AppliactionTest#getKnownShortcut
+mvn test -Dtest=ApplicationTest#getKnownShortcut
 ```
 
 ## Configuration
@@ -131,6 +131,25 @@ The application uses YAML configuration files in `src/main/resources/`:
 - `application-test.yml`: Test profile overrides
 
 Database migrations are managed by Flyway and located in `src/main/resources/db/migration/`.
+
+## Releasing a New Version
+
+Releasing a new version is streamlined with the Maven Release Plugin:
+
+```shell script
+mvn release:prepare
+```
+
+This single command handles the entire release process:
+1. Runs tests to ensure everything passes
+2. Updates the version in `pom.xml` (removes `-SNAPSHOT`)
+3. Creates a Git tag for the release
+4. Builds and tags the Docker image with the release version
+5. Pushes the Docker image to the registry (configured as `degas.bruun-rasmussen.dk:5000`)
+6. Increments to the next SNAPSHOT version
+7. Commits and pushes all changes to Git
+
+**Note:** There is no separate `mvn release:perform` step required. The Docker image is automatically built, tagged, and pushed during the `:prepare` phase thanks to the Quarkus JIB container image plugin configuration.
 
 ## Technology Stack
 
