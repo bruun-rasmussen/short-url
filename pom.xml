@@ -28,7 +28,7 @@
         <surefire-plugin.version>3.5.2</surefire-plugin.version>
         <skipITs>true</skipITs>
 
-        <quarkus.platform.version>3.18.3</quarkus.platform.version>
+        <quarkus.platform.version>3.36.3</quarkus.platform.version>
 
         <zxing.version>3.4.1</zxing.version>
     </properties>
