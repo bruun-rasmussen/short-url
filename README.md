@@ -9,6 +9,7 @@ A flexible URL shortening service built with Quarkus that generates short tags f
 - **Flexible Schemes**: Define multiple URL schemes with pattern matching and custom tag generation
 - **RESTful API**: Simple HTTP endpoints for redirects, metadata, and QR code generation
 - **Persistent Storage**: MySQL database with Flyway migrations for schema management
+- **Health Endpoints**: Liveness and readiness checks via SmallRye Health (`/q/health/live`, `/q/health/ready`)
 
 ## API Endpoints
 
@@ -154,6 +155,7 @@ This single command handles the entire release process:
 ## Technology Stack
 
 - **Quarkus 3.36.3**: Java framework
+- **SmallRye Health**: Health check endpoints
 - **Hibernate ORM with Panache**: Simplified persistence layer
 - **MySQL 8.4**: Database
 - **Flyway**: Database migrations
