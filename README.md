@@ -153,7 +153,7 @@ This single command handles the entire release process:
 
 ## Technology Stack
 
-- **Quarkus 3.18.3**: Java framework
+- **Quarkus 3.36.3**: Java framework
 - **Hibernate ORM with Panache**: Simplified persistence layer
 - **MySQL 8.4**: Database
 - **Flyway**: Database migrations
