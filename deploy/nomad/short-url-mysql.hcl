@@ -8,7 +8,7 @@ job "short-url-mysql" {
 
     constraint {
       attribute = "${node.unique.name}"
-      value     = "thor1.bruun-rasmussen.dk"
+      value     = "thor4.bruun-rasmussen.dk"
     }
 
     vault {
