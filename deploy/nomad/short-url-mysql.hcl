@@ -6,11 +6,6 @@ job "short-url-mysql" {
   group "short-url-mysql" {
     count = 1
 
-    constraint {
-      attribute = "${node.unique.name}"
-      value     = "thor4.bruun-rasmussen.dk"
-    }
-
     vault {
       role = "nomad-workloads"
     }
@@ -19,12 +14,11 @@ job "short-url-mysql" {
       port "mysql" { to = 3306 }
     }
 
-    # Persistent storage. Declared on the client in
-    # ansible/roles/nomad/templates/nomad-client.hcl. Replaces a bind mount into
-    # /var/lib/docker/volumes/short-url-mysql-data/_data: that path worked (it's
-    # absolute, so unlike rabbitmq's original mistake it didn't die with the
-    # allocation) but bypassed Docker's own volume reference counting --
-    # `docker volume prune` could wipe it out from under a stopped container.
+    # Persistent storage on the NetApp share (netapp01:/thor, NFSv4.1), declared on
+    # every thor in iac (`nomad_nfs_volumes` in ansible/group_vars/thor.yml), so no
+    # node constraint: a drain or reschedule takes the data along. InnoDB's lock on
+    # ibdata1 holds over NFSv4.1, so a second mysqld can't open the same datadir.
+    # Until 2026-10-02 it was pinned to thor4's local disk.
     volume "short-url-mysql-data" {
       type   = "host"
       source = "short-url-mysql-data"

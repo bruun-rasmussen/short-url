@@ -5,7 +5,7 @@ Job specs for running short-url on the BR1 Nomad cluster. Cluster-wide operation
 | Job               | Count | Node    | Port           | Purpose                                          |
 |-------------------|-------|---------|----------------|--------------------------------------------------|
 | `short-url`       | 1     | any     | 4009 (static)  | The Quarkus app; DB credentials from Vault       |
-| `short-url-mysql` | 1     | thor4   | dynamic        | MySQL 8.4 backing store                          |
+| `short-url-mysql` | 1     | any     | dynamic        | MySQL 8.4 backing store                          |
 
 Both run in node pool `production`, datacenter `BR1`.
 
@@ -40,7 +40,7 @@ If a job won't start and template rendering fails, check `vault status` first: a
 
 **Health check.** `short-url` is checked at `/q/health` (SmallRye Health), which the Consul service registration uses. `short-url-mysql` has a plain TCP check.
 
-**Storage.** MySQL data lives on the host volume `short-url-mysql-data`, declared on the Nomad client in the `iac` repo (`ansible/roles/nomad/templates/nomad-client.hcl`). It replaced a bind mount into `/var/lib/docker/volumes/...` that bypassed Docker's reference counting, so `docker volume prune` could have wiped it. Data survives allocation replacement. `short-url-mysql` is pinned to `thor4.bruun-rasmussen.dk` because the volume is local to that node (moved from thor1 on 2026-09-29; thor1 still holds an old copy). To move it again: stop both jobs, copy the directory with `tar --numeric-owner` (or `rsync -a`) as root, change the constraint, and start both jobs again. The volume was about 270 MB, so downtime is a few minutes.
+**Storage.** MySQL data lives on the host volume `short-url-mysql-data`. Since 2026-10-02 that's a directory on the NetApp share `netapp01:/thor` (NFSv4.1), declared on every thor in the `iac` repo (`nomad_nfs_volumes` in `ansible/group_vars/thor.yml`). So the job has no node constraint, and a drain or reschedule moves MySQL with its data. Nothing to copy. Over NFS a commit costs ~2 ms and a primary-key read ~0.1 ms, which is plenty for this load but not for anything write-heavy. InnoDB's lock on `ibdata1` holds over NFSv4.1, so a second mysqld on the same datadir waits instead of starting (tested 2026-10-02). Before the move it was pinned to thor4's local disk; thor4 and thor1 still hold old copies under `/var/lib/nomad/volumes/short-url-mysql`.
 
 **Shutdown.** Both jobs set `shutdown_delay = "5s"`. This gives the consul-template instances on the Live-Front hosts time to re-render the nginx upstream list before the process exits. Removing it causes connection errors during deploys.
 
