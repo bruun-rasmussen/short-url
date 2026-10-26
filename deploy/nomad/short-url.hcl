@@ -21,7 +21,7 @@ job "short-url" {
       driver = "docker"
 
       config {
-        image = "degas.bruun-rasmussen.dk:5000/osa/short-url:2.3"
+        image = "degas.bruun-rasmussen.dk:5000/osa/short-url:2.4"
         ports = ["http"]
       }
 
