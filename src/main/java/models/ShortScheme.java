@@ -64,6 +64,7 @@ public class ShortScheme extends PanacheEntityBase {
 
     @Column(name = "tag_alphabet")
     @NotBlank
+    @Pattern(regexp = "[A-Za-z0-9._~@-]+", message = "must be URL-safe characters (A-Z a-z 0-9 . _ ~ @ -)")
     public String tagAlphabet;
 
     @Column(name = "tag_length")

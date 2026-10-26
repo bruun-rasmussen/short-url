@@ -54,7 +54,7 @@ public class ShortUrlTag extends PanacheEntityBase {
 
             shortcut = new ShortUrlTag();
             shortcut.scheme = scheme;
-            shortcut.tag = scheme.generateTag();
+            shortcut.tag = generateUniqueTag(scheme);
             shortcut.target = target;
             shortcut.persist();
 
@@ -62,5 +62,18 @@ public class ShortUrlTag extends PanacheEntityBase {
         }
 
         return shortcut;
+    }
+
+    private static final int MAX_TAG_ATTEMPTS = 10;
+
+    private static String generateUniqueTag(ShortScheme scheme) {
+        for (int attempt = 1; attempt <= MAX_TAG_ATTEMPTS; attempt++) {
+            String tag = scheme.generateTag();
+            if (count("tag", tag) == 0)
+                return tag;
+
+            log.debug("'{}': tag clash, retrying (attempt {})", tag, attempt);
+        }
+        throw new IllegalStateException(scheme.name + ": no unique tag found after " + MAX_TAG_ATTEMPTS + " attempts");
     }
 }
