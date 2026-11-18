@@ -26,6 +26,9 @@ job "short-url" {
       }
 
       env {
+        # CVE-2026-114938 workaround: C2's AVX-512 Base64 decode intrinsic overflows on crafted
+        # input (the thor CPUs have AVX-512 VBMI). Drop it once the image is on a patched JDK.
+        JAVA_TOOL_OPTIONS = "-XX:-UseBASE64Intrinsics"
         TZ                        = "Europe/Copenhagen"
         QUARKUS_HTTP_PORT         = "4009"
         QUARKUS_HTTP_CORS         = "true"
