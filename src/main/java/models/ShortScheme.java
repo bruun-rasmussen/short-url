@@ -2,7 +2,6 @@ package models;
 
 import java.net.URI;
 import java.util.regex.Matcher;
-import org.apache.commons.lang.StringUtils;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
@@ -16,7 +15,7 @@ public class ShortScheme extends PanacheEntityBase {
     private java.util.regex.Pattern getPattern() {
         if (pattern == null) {
             String p = targetPattern;
-            if (StringUtils.isEmpty(p))
+            if (p == null || p.isEmpty())
                 p = "(.*)";
             if (!p.startsWith("^"))
                 p = "^" + p;
